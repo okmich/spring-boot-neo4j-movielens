@@ -1,0 +1,24 @@
+// Return the top x most rated movies
+	MATCH (u:User)-[]->(r:Rating)-[t:TO]->(m:Movie)
+	WITH m.movieId as movieId, m.title as title, count(r) as count, AVG(r.rate) as avg_rate
+	WHERE count > 20
+	RETURN movieId, title, count, avg_rate
+	ORDER BY avg_rate DESC //which should we use? count or rating
+	LIMIT 5;
+
+// Return other movies that belong to the same genre as movie x
+	MATCH (m:Movie {movieId : 5})-[:IS_A]-(g)-[:IS_A]-(otherMovies)
+	return m, g, otherMovies
+
+
+	MATCH (m:Movie {movieId : 2})-[:IS_A]-(g)-[:IS_A]-(otherMovies)
+	return m, g, otherMovies
+
+
+// Return the most rated movies that were rated by other people who rated movie X
+
+
+// Return People who are most likely to see a movies seen by user x
+
+
+

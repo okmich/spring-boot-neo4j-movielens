@@ -1,0 +1,65 @@
+CREATE CONSTRAINT ON (u:User) ASSERT u.userId IS UNIQUE;
+CREATE CONSTRAINT ON (m:Movie) ASSERT m.movieId IS UNIQUE;
+CREATE CONSTRAINT ON (g:Genre) ASSERT g.name IS UNIQUE;
+
+CREATE INDEX ON :Rating(userId);
+CREATE INDEX ON :Rating(movieId);
+
+//loading static genres
+CREATE (: Genre {name: "Action"}),
+		(: Genre {name: "Adventure"}),
+		(: Genre {name: "Animation"}),
+		(: Genre {name: "Children's"}),
+		(: Genre {name: "Comedy"}),
+		(: Genre {name: "Crime"}),
+		(: Genre {name: "Documentary"}),
+		(: Genre {name: "Drama"}),
+		(: Genre {name: "Fantasy"}),
+		(: Genre {name: "Film-Noir"}),
+		(: Genre {name: "Horror"}),
+		(: Genre {name: "Musical"}),
+		(: Genre {name: "Mystery"}),
+		(: Genre {name: "Romance"}),
+		(: Genre {name: "Sci-Fi"}),
+		(: Genre {name: "Thriller"}),
+		(: Genre {name: "War"}),
+		(: Genre {name: "Western"});
+		
+
+//load movies
+//remember to comment out the dbms.directories.import=import in the neo4j.conf file
+USING PERIODIC COMMIT 100
+LOAD CSV FROM 'file:///home/michaele/practise/sample-data/ml-1m/movies.dat' AS line
+WITH SPLIT(line[0], "::") AS fields
+WITH fields[0] as movieId, fields[1] as title, fields[2] as genres
+CREATE (m:Movie {movieId: TOINT(movieId)})
+	SET m.title=title
+	SET m.genres=genres;
+
+
+//load users
+LOAD CSV FROM 'file:///home/michaele/practise/sample-data/ml-1m/users.dat' AS line
+WITH SPLIT(line[0], "::") AS fields
+CREATE (u:User {userId: TOINT(fields[0]), gender: fields[1], age: TOINT(fields[2]), occupation: TOINT(fields[3]), zipCode: fields[4]});
+
+
+//load rating and rating relationship
+USING PERIODIC COMMIT 100 //without this line, we get an outofmemory exception
+LOAD CSV FROM 'file:///home/michaele/practise/sample-data/ml-1m/ratings.dat' AS line
+WITH SPLIT(line[0], "::") AS fields
+MATCH (m:Movie {movieId : TOINT(fields[1])})
+MATCH (u:User {userId: TOINT(fields[0])})
+CREATE (r:Rating {userId: TOINT(fields[0]), movieId: TOINT(fields[1]), rate: TOFLOAT(fields[2]), ts: TOFLOAT(fields[3])}),
+	   (u)-[:GAVE]->(r),
+       (r)-[:TO]->(m);
+
+
+
+//evolve the data to have a genre with relationship to the movie
+MATCH (movie:Movie)
+WHERE coalesce(movie.genres, "-") <> "-"
+WITH SPLIT(movie.genres, "|") as parts, movie as m
+UNWIND parts as x
+MATCH (g: Genre {name: x})
+MERGE (m)-[:IS_A]->(g)
+REMOVE m.genres;
