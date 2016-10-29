@@ -16,4 +16,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepo extends GraphRepository<User> {
 
+    User findByUserId(long userId);
 }

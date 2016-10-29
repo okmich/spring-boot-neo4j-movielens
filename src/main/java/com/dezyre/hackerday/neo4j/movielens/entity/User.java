@@ -6,11 +6,9 @@
 package com.dezyre.hackerday.neo4j.movielens.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
 
 /**
  *
@@ -35,6 +33,20 @@ public class User implements Serializable {
 //    private List<Rating> ratings;
 
     public User() {
+    }
+
+    /**
+     * @return the Id
+     */
+    public Long getId() {
+        return Id;
+    }
+
+    /**
+     * @param Id the Id to set
+     */
+    public void setId(Long Id) {
+        this.Id = Id;
     }
 
     /**
@@ -113,7 +125,6 @@ public class User implements Serializable {
 //    public List<Rating> getRatings() {
 //        return ratings;
 //    }
-
     @Override
     public String toString() {
         return "User{" + "userId=" + getUserId() + ", gender=" + getGender() + ", age=" + getAge() + ", occupation=" + getOccupation() + ", zipCode=" + getZipCode() + '}';

@@ -50,6 +50,11 @@ public class UserController {
         return userRepo.findOne(userId);
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public User getUserById(@RequestParam long userId) {
+        return userRepo.findByUserId(userId);
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public User createUser(@RequestBody User user) {
         return userRepo.save(user);
@@ -62,6 +67,6 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}/movierecommended", method = RequestMethod.GET)
     public List<Movie> recommendMovie(@PathVariable long userId) {
-        return null;
+        return serviceDAO.getMoviesForUserId(userId);
     }
 }

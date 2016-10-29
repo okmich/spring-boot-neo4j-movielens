@@ -16,4 +16,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MovieRepo extends GraphRepository<Movie> {
 
+    Movie findByMovieId(long movieId);
 }

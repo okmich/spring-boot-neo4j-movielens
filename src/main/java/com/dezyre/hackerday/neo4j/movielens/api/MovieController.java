@@ -55,7 +55,7 @@ public class MovieController {
         return movieRepo.findAll(pgbl);
     }
 
-    @RequestMapping(value = "/genres",method = RequestMethod.GET)
+    @RequestMapping(value = "/genres", method = RequestMethod.GET)
     public Page<Genre> getGenres(@RequestParam(name = "pageCount", required = false, defaultValue = "0") int pageCount,
             @RequestParam(name = "pageSize", required = false, defaultValue = "25") int pageSize) {
         Pageable pgbl = new PageRequest(pageCount, pageSize, new Sort(Sort.Direction.ASC, "name"));
@@ -65,6 +65,11 @@ public class MovieController {
     @RequestMapping(value = "/{movieId}", method = RequestMethod.GET)
     public Movie getMovie(@PathVariable long movieId) {
         return movieRepo.findOne(movieId);
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public Movie getMovieByMovieId(@RequestParam long movieId) {
+        return movieRepo.findByMovieId(movieId);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -79,11 +84,14 @@ public class MovieController {
 
     @RequestMapping(value = "/{movieId}/rate", method = RequestMethod.POST)
     public Rating rateMovie(@PathVariable long movieId, @RequestBody Rating rating) {
-        return null;
+        rating.setTimestamp(System.currentTimeMillis());
+        rating.setMovieId(movieId);
+
+        return ratingRepo.save(rating);
     }
 
     @RequestMapping(value = "/{movieId}/alsowatched", method = RequestMethod.GET)
     public List<Movie> recommendOnMovie(@PathVariable long movieId) {
-        return null;
+        return serviceDAO.getMoviesByMovieId(movieId);
     }
 }

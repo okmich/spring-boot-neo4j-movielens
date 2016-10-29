@@ -7,6 +7,9 @@ package com.dezyre.hackerday.neo4j.movielens.api.dao;
 
 import com.dezyre.hackerday.neo4j.movielens.entity.Movie;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,14 +19,16 @@ import org.springframework.stereotype.Service;
 @Service("serviceDAO")
 public class ServiceDAOImpl implements ServiceDAO {
 
-//    @Autowired
-//    private Neo4jTemplate neo4jTemplate;
+    @Autowired
+    @Qualifier("neo4jTemplate")
+    private Neo4jOperations neo4jTemplate;
 
     public ServiceDAOImpl() {
     }
 
     @Override
     public List<Movie> getMoviesByMovieId(Long movieId) {
+        neo4jTemplate.
         return null;
     }
 
