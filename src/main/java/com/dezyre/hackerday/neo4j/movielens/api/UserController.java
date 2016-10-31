@@ -5,7 +5,6 @@
  */
 package com.dezyre.hackerday.neo4j.movielens.api;
 
-import com.dezyre.hackerday.neo4j.movielens.api.dao.ServiceDAO;
 import com.dezyre.hackerday.neo4j.movielens.entity.Movie;
 import com.dezyre.hackerday.neo4j.movielens.entity.User;
 import com.dezyre.hackerday.neo4j.movielens.entity.repo.UserRepo;
@@ -30,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private ServiceDAO serviceDAO;
-
-    @Autowired
     private UserRepo userRepo;
 
     public UserController() {
@@ -51,7 +47,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public User getUserById(@RequestParam long userId) {
+    public User getUserByUserId(@RequestParam long userId) {
         return userRepo.findByUserId(userId);
     }
 
@@ -67,6 +63,6 @@ public class UserController {
 
     @RequestMapping(value = "/{userId}/movierecommended", method = RequestMethod.GET)
     public List<Movie> recommendMovie(@PathVariable long userId) {
-        return serviceDAO.getMoviesForUserId(userId);
+        return userRepo.recommendByUserRatingHistory(userId);
     }
 }

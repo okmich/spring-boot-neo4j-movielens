@@ -25,7 +25,7 @@ public class Rating implements Serializable {
     private float rating;
     private String comment;
     private long timestamp;
-    @Relationship(type = "ON", direction = Relationship.OUTGOING)
+    @Relationship(type = "TO", direction = Relationship.OUTGOING)
     private Movie movie;
 
     public Rating() {
@@ -140,6 +140,13 @@ public class Rating implements Serializable {
     @Override
     public String toString() {
         return "Rating{" + "id=" + id + ", userId=" + userId + ", movieId=" + movieId + ", rating=" + rating + ", comment=" + comment + ", timestamp=" + timestamp + '}';
+    }
+
+    /**
+     * @param movie the movie to set
+     */
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
 }

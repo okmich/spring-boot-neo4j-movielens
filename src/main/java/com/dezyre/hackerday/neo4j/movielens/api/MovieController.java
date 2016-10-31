@@ -5,25 +5,24 @@
  */
 package com.dezyre.hackerday.neo4j.movielens.api;
 
-import com.dezyre.hackerday.neo4j.movielens.api.dao.ServiceDAO;
+import com.dezyre.hackerday.neo4j.movielens.entity.Genre;
 import com.dezyre.hackerday.neo4j.movielens.entity.Movie;
 import com.dezyre.hackerday.neo4j.movielens.entity.Rating;
-import com.dezyre.hackerday.neo4j.movielens.entity.Genre;
+import com.dezyre.hackerday.neo4j.movielens.entity.repo.GenreRepo;
 import com.dezyre.hackerday.neo4j.movielens.entity.repo.MovieRepo;
 import com.dezyre.hackerday.neo4j.movielens.entity.repo.RatingRepo;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.dezyre.hackerday.neo4j.movielens.entity.repo.GenreRepo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 /**
  *
@@ -32,9 +31,6 @@ import org.springframework.data.domain.Sort;
 @RestController
 @RequestMapping("/service/movies")
 public class MovieController {
-
-    @Autowired
-    private ServiceDAO serviceDAO;
 
     @Autowired
     private MovieRepo movieRepo;
@@ -87,11 +83,14 @@ public class MovieController {
         rating.setTimestamp(System.currentTimeMillis());
         rating.setMovieId(movieId);
 
+        Movie moovie = movieRepo.findByMovieId(movieId);
+        rating.setMovie(moovie);
+
         return ratingRepo.save(rating);
     }
 
-    @RequestMapping(value = "/{movieId}/alsowatched", method = RequestMethod.GET)
+    @RequestMapping(value = "/{movieId}/recommend", method = RequestMethod.GET)
     public List<Movie> recommendOnMovie(@PathVariable long movieId) {
-        return serviceDAO.getMoviesByMovieId(movieId);
+        return movieRepo.getMoviesByMovieId(movieId);
     }
 }

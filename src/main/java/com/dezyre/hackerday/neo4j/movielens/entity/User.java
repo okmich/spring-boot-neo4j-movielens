@@ -29,7 +29,7 @@ public class User implements Serializable {
     private Integer occupation;
     @Property
     private String zipCode;
-//    @Relationship(type = "GAVE", direction = Relationship.OUTGOING)
+//    @Relationship(type = "GIVE", direction = Relationship.OUTGOING)
 //    private List<Rating> ratings;
 
     public User() {
